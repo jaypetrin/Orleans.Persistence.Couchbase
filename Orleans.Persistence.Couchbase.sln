@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Couchbase", "src\Storage.Couchbase\Orleans.Persistence.Couchbase.csproj", "{6A88F54D-78E7-4349-8519-F752241E6456}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A88F54D-78E7-4349-8519-F752241E6456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A88F54D-78E7-4349-8519-F752241E6456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A88F54D-78E7-4349-8519-F752241E6456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A88F54D-78E7-4349-8519-F752241E6456}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E9A6B82-EEFA-4AE5-A67B-CBB1955FEAAC}
+	EndGlobalSection
+EndGlobal
