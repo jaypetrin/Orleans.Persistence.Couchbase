@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Storage.Couchbase
+﻿namespace Storage.Couchbase
 {
     public class GrainStateDocument
     {
-        public Guid? Id { get; set; }
-        public string Type => typeof(GrainStateDocument).Name;
+        //Combination of GrainId and GrainType
+        public string Id { get; set; }
+
+        //Serialized JSON data stored as a binary in Couch
+        public byte[] Data { get;set;}
     }
 }

@@ -1,4 +1,5 @@
-﻿using Orleans;
+﻿using Newtonsoft.Json;
+using Orleans;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Text;
 namespace Storage.Couchbase
 {
     public class CouchbaseGrainStorageOptions
-    {   
+    {
         public List<Uri> Uris { get; set; }
 
         public string BucketName { get; set; }
@@ -16,6 +17,12 @@ namespace Storage.Couchbase
         public string Password { get; set; }
 
         public bool DeleteStateOnClear { get; set; }
+
+        public TypeNameHandling? TypeNameHandling { get; set; }
+
+        public bool IndentJson { get; set; }
+
+        public bool UseFullAssemblyNames { get; set; }
 
         /// <summary>
         /// Stage of silo lifecycle where storage should be initialized.  Storage must be initialized prior to use.

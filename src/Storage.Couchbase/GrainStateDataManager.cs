@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Storage.Couchbase
 {
-    public class GrainStateDataManager<T> where T : class
+    public class GrainStateDataManager
     {
-        private readonly CouchbaseDataManager<T> dataManager;
+        private readonly CouchbaseDataManager dataManager;
 
-        public GrainStateDataManager(CouchbaseGrainStorageOptions options)
+        public GrainStateDataManager(ILogger logger, CouchbaseGrainStorageOptions options)
         {
-            dataManager = new CouchbaseDataManager<T>(options.Uris, options.BucketName, options.UserName, options.Password);
+            dataManager = new CouchbaseDataManager(logger, options.Uris, options.BucketName, options.UserName, options.Password);
         }
 
         public Task InitConnectionAsync()
@@ -21,7 +19,17 @@ namespace Storage.Couchbase
 
         public async Task<GrainStateDocument> Read(string docId)
         {
+            return await dataManager.ReadSingleEntryAsync(docId);
+        }
 
+        public async Task Write(GrainStateDocument document)
+        {
+            await dataManager.UpsertEntryAsync(document);
+        }
+
+        public async Task Delete(GrainStateDocument document)
+        {
+            await dataManager.DeleteEntryAsync(document.Id.ToString());
         }
     }
 }

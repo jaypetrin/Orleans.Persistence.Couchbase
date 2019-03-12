@@ -1,33 +1,37 @@
-﻿using Couchbase;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Couchbase;
 using Couchbase.Authentication;
 using Couchbase.Configuration.Client;
 using Couchbase.Core;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Storage.Couchbase
 {
-    public class CouchbaseDataManager<T> where T : GrainStateDocument
+    public class CouchbaseDataManager
     {
+        private readonly ILogger _logger;
+
+        private IBucket _bucket;
         //Couch Interactions
 
         public List<Uri> ClusterUris { get; set; }
-        public CouchbaseDataManager(string userName, string password, string bucketName) 
+        public CouchbaseDataManager(ILogger logger, string userName, string password, string bucketName)
         {
+            _logger = logger;
             this.UserName = userName;
-                this.Password = password;
-                this.BucketName = bucketName;
-               
+            this.Password = password;
+            this.BucketName = bucketName;
         }
-                public string UserName { get; set; }
+
+        public string UserName { get; set; }
         public string Password { get; set; }
         public string BucketName { get; set; }
 
-        private IBucket _bucket;
-
-        public CouchbaseDataManager(List<Uri> uris, string bucketName, string userName, string password)
+        public CouchbaseDataManager(ILogger logger, List<Uri> uris, string bucketName, string userName, string password)
         {
+            _logger = logger;
             ClusterUris = uris;
             BucketName = bucketName;
             UserName = userName;
@@ -51,29 +55,29 @@ namespace Storage.Couchbase
             ClusterHelper.Close();
         }
 
-        public async Task<string> UpsertEntryAsync(T data)
+        public async Task<string> UpsertEntryAsync(GrainStateDocument document)
         {
             //Insert if document doesn't exist otherwise update existing document
-            if(!data.Id.HasValue)
+            if (!String.IsNullOrWhiteSpace(document.Id))
             {
-                data.Id = Guid.NewGuid();
+                document.Id = Guid.NewGuid().ToString();
             }
 
-            await _bucket.UpsertAsync(data.Id.ToString(), data);
+            await _bucket.UpsertAsync(document.Id.ToString(), document.Data);
             //TODO: Add Exception Handling
-            return data.Id.ToString();
+            return document.Id.ToString();
         }
 
-        public async Task DeleteEntryAsync(string docId)
+        public async Task DeleteEntryAsync(string documentId)
         {
             //Delete existing document
-            await _bucket.RemoveAsync(docId);
+            await _bucket.RemoveAsync(documentId);
             //TODO: Add Exception Handling
         }
 
-        public async Task<T> ReadSingleEntryAsync(string docId)
+        public async Task<GrainStateDocument> ReadSingleEntryAsync(string documentId)
         {
-            var result = await _bucket.GetAsync<T>(docId);
+            var result = await _bucket.GetAsync<GrainStateDocument>(documentId);
 
             //TODO: Add Exception Handling
             return result.Value;
