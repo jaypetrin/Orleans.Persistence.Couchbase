@@ -9,7 +9,7 @@ namespace Storage.Couchbase
 
         public GrainStateDataManager(ILogger logger, CouchbaseGrainStorageOptions options)
         {
-            dataManager = new CouchbaseDataManager(logger, options.Uris, options.BucketName, options.UserName, options.Password);
+            dataManager = new CouchbaseDataManager(logger, options);
         }
 
         public Task InitConnectionAsync()
