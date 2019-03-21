@@ -27,3 +27,10 @@ To see a working example of the project you can run the sample application. To d
 7. In the SampleClient console type /list
 8. The name you entered in step 6 should appear
 9. You can repeat steps 6-8 and the list should grow with the new names being added to the state and retrieved from the Couchbase Bucket
+
+# Contributing
+
+## TODO:
+- [ ] Add Data cleanup
+- [ ] Fix AddCouchbaseGrainStorageAsDefault SiloHostBuilder Extension, it currently does not create a "default" state provider
+ 

@@ -47,14 +47,13 @@ namespace Storage.Couchbase
                 throw new ArgumentException("GrainState-Bucket property not initialized");
 
             string pk = GetKeyString(grainReference);
-           
+
             var entity = new GrainStateDocument { Id = pk };
-            string operation = "Clearing";
+
             try
             {
                 if (_options.DeleteStateOnClear)
                 {
-                    operation = "Deleting";
                     await DoOptimisticUpdateAsync(() => _dataManager.Delete(entity), grainType, grainReference, _options.BucketName).ConfigureAwait(false);
                 }
             }
@@ -84,7 +83,7 @@ namespace Storage.Couchbase
                 throw new ArgumentException("GrainState-Couchbase property not initialized");
 
             string pk = GetKeyString(grainReference);
-           
+
             var contents = ConvertToStorageFormat(grainState);
             var document = new GrainStateDocument { Id = pk, Data = contents };
 
@@ -92,7 +91,7 @@ namespace Storage.Couchbase
             {
                 await DoOptimisticUpdateAsync(() => _dataManager.Write(document), grainType, grainReference, _options.BucketName).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -141,7 +140,7 @@ namespace Storage.Couchbase
             {
                 result = JsonConvert.DeserializeObject<object>(str, _jsonSettings);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
