@@ -1,20 +1,29 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+This project is to allow developers to use Couchbase as a data source to store Grain State using the [Microsoft Orleans](https://github.com/dotnet/orleans) virtual actor framework. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# Implementation
+ Currently the only way to implement the project is to add a reference to the Orleans.Persistence.Couchbase.csproj in the silo project of your solution. An example of this in the [sample](https://github.com/jaypetrin/Orleans.Persistence.Couchbase/tree/master/sample) folder.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+##Coming soon Nuget package
+Soon there will be a nuget package for easy implementation.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+# Running the Sample
+To see a working example of the project you can run the sample application. To do so, follow these steps:
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://www.visualstudio.com/en-us/docs/git/create-a-readme). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+1. Clone the Repo
+2. Create an appsettings.json file with the following fields 
+```json
+{
+  "CouchbaseUris": [ "https://yourcouchbaseurlhere1:8091", "https://yourcouchbaseurlhere2:8091", "https://yourcouchbaseurlhere3:8091" ],
+  "CouchbaseUserName": "administrator",
+  "CouchbasePassword": "password",
+  "CouchbaseBucketName": "bucketName"
+}
+```
+3. Save the appsettings.json file in the root of the SampleSilo project.
+4. Start the SampleSilo project
+5. Start the SampleClient project
+6. In the SampleClient console type /add *name*
+7. In the SampleClient console type /list
+8. The name you entered in step 6 should appear
+9. You can repeat steps 6-8 and the list should grow with the new names being added to the state and retrieved from the Couchbase Bucket
