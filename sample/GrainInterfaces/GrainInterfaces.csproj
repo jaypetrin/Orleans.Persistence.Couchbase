@@ -5,9 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CouchbaseNetClient" Version="2.7.4" />
     <PackageReference Include="Microsoft.Orleans.Core" Version="2.2.4" />
-    <PackageReference Include="Microsoft.Orleans.Runtime.Abstractions" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="2.2.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

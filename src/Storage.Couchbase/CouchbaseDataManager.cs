@@ -9,16 +9,14 @@ namespace Storage.Couchbase
 {
     public class CouchbaseDataManager
     {
-        private readonly ILogger _logger;
         private readonly CouchbaseGrainStorageOptions _config;
 
         private CbBucket _bucket;
         //Couch Interactions
 
         public List<Uri> ClusterUris { get; set; }
-        public CouchbaseDataManager(ILogger logger, CouchbaseGrainStorageOptions options)
-        {
-            _logger = logger;
+        public CouchbaseDataManager(CouchbaseGrainStorageOptions options)
+        {   
             _config = options;
         }
 
@@ -45,6 +43,8 @@ namespace Storage.Couchbase
                 document.Id = Guid.NewGuid().ToString();
             }
 
+            if (_bucket == null)
+                await InitConnection();
             var bucket = _bucket.Bucket;
             await bucket.UpsertAsync(document.Id.ToString(), document.Data);
             //TODO: Add Exception Handling
@@ -54,6 +54,8 @@ namespace Storage.Couchbase
         public async Task DeleteEntryAsync(string documentId)
         {
             //Delete existing document
+            if (_bucket == null)
+                await InitConnection();
             var bucket = _bucket.Bucket;
             await bucket.RemoveAsync(documentId);
             //TODO: Add Exception Handling
@@ -61,6 +63,8 @@ namespace Storage.Couchbase
 
         public async Task<GrainStateDocument> ReadSingleEntryAsync(string documentId)
         {
+            if(_bucket == null)
+                await InitConnection();
             var bucket = _bucket.Bucket;
             var result = await bucket.GetAsync<GrainStateDocument>(documentId);
 

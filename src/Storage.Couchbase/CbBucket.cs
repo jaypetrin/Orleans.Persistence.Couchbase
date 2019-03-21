@@ -31,9 +31,14 @@ namespace Orleans.Persistence.Couchbase
         {
             get
             {
+                try { 
                 if (_bucket == null)
                     InitConnection().Wait();
-
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
                 return _bucket;
             }
         }

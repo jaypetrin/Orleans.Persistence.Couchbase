@@ -15,7 +15,6 @@ namespace Storage.Couchbase
 {
     public class CouchbaseGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
     {
-        private readonly ILogger _logger;
         private readonly CouchbaseGrainStorageOptions _options;
         private readonly ClusterOptions _clusterOptions;
         private readonly IGrainFactory _grainFactory;
@@ -26,7 +25,7 @@ namespace Storage.Couchbase
         private JsonSerializerSettings _jsonSettings;
         private GrainStateDataManager _dataManager;
 
-        public CouchbaseGrainStorage(ILogger logger,
+        public CouchbaseGrainStorage(
             string name,
             CouchbaseGrainStorageOptions options,
             IOptions<ClusterOptions> clusterOptions,
@@ -34,7 +33,6 @@ namespace Storage.Couchbase
             ITypeResolver typeResolver,
             SerializationManager serializationManager)
         {
-            _logger = logger;
             _options = options;
             _name = name;
             _clusterOptions = clusterOptions.Value;
@@ -49,16 +47,7 @@ namespace Storage.Couchbase
                 throw new ArgumentException("GrainState-Bucket property not initialized");
 
             string pk = GetKeyString(grainReference);
-            if (_logger.IsEnabled(LogLevel.Trace))
-            {
-                _logger.LogTrace("Clearing: GrainType={grainType} Pk={grainKey} GrainId={grainId} DeleteStateOnClear={deleteStateOnClear} from Bucket {bucketName}",
-                    grainType,
-                    pk,
-                    grainReference,
-                    _options.DeleteStateOnClear,
-                    _options.BucketName);
-            }
-
+           
             var entity = new GrainStateDocument { Id = pk };
             string operation = "Clearing";
             try
@@ -71,8 +60,6 @@ namespace Storage.Couchbase
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error {operation}: GrainType={grainType} GrainId={grainId} from Bucket={bucketName} Exception={message}",
-                    operation, grainType, grainReference, _options.BucketName, ex.Message);
                 throw ex;
             }
         }
@@ -97,9 +84,7 @@ namespace Storage.Couchbase
                 throw new ArgumentException("GrainState-Couchbase property not initialized");
 
             string pk = GetKeyString(grainReference);
-            if (_logger.IsEnabled(LogLevel.Trace))
-                _logger.LogTrace("Writing: GrainType={grainType} Pk={primaryKey} Grainid={grainReference} to Bucket={bucketName}", grainType, pk, grainReference, _options.BucketName);
-
+           
             var contents = ConvertToStorageFormat(grainState);
             var document = new GrainStateDocument { Id = pk, Data = contents };
 
@@ -107,9 +92,8 @@ namespace Storage.Couchbase
             {
                 await DoOptimisticUpdateAsync(() => _dataManager.Write(document), grainType, grainReference, _options.BucketName).ConfigureAwait(false);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                _logger.LogError($"Error Writing: GrainType={grainType} Grainid={grainReference} to Bucket={_options.BucketName} Exception={exc.Message}", exc);
                 throw;
             }
         }
@@ -121,7 +105,7 @@ namespace Storage.Couchbase
                 _jsonSettings = OrleansJsonSerializer
                     .UpdateSerializerSettings(OrleansJsonSerializer.GetDefaultSerializerSettings(_typeResolver, _grainFactory),
                         _options.UseFullAssemblyNames, _options.IndentJson, _options.TypeNameHandling);
-                _dataManager = new GrainStateDataManager(_logger, _options);
+                _dataManager = new GrainStateDataManager(_options);
             }
             catch (Exception ex)
             {
@@ -159,7 +143,6 @@ namespace Storage.Couchbase
             }
             catch(Exception ex)
             {
-                _logger.LogError("Failed to convert State data.");
                 throw ex;
             }
 

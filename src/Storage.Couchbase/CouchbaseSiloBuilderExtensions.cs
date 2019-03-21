@@ -33,24 +33,9 @@ namespace Orleans.Persistence.Couchbase
             return builder.ConfigureServices(services => services.AddCouchbaseGrainStorage(name, configureOptions));
         }
 
-        public static ISiloBuilder AddCouchbaseGrainStorage(this ISiloBuilder builder, Action<CouchbaseGrainStorageOptions> configureOptions)
+        public static ISiloHostBuilder AddCouchbaseGrainStorage(this ISiloHostBuilder builder, Action<CouchbaseGrainStorageOptions> configureOptions)
         {
             return builder.AddCouchbaseGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, configureOptions);
-        }
-
-        public static ISiloBuilder AddCouchbaseGrainStorage(this ISiloBuilder builder, string name, Action<CouchbaseGrainStorageOptions> configureOptions)
-        {
-            return builder.ConfigureServices(services => services.AddCouchbaseGrainStorage(name, ob => ob.Configure(configureOptions)));
-        }
-
-        public static ISiloBuilder AddCouchbaseGrainStorageAsDefault(this ISiloBuilder builder, Action<OptionsBuilder<CouchbaseGrainStorageOptions>> configureOptions = null)
-        {
-            return builder.AddCouchbaseGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, configureOptions);
-        }
-
-        public static ISiloBuilder AddCouchbaseGrainStorage(this ISiloBuilder builder, string name, Action<OptionsBuilder<CouchbaseGrainStorageOptions>> configureOptions = null)
-        {
-            return builder.ConfigureServices(services => services.AddCouchbaseGrainStorage(name, configureOptions));
         }
 
         internal static IServiceCollection AddCouchbaseGrainStorage(this IServiceCollection services, string name,
